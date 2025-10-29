@@ -1,38 +1,30 @@
-import os
 from flask import Flask, render_template, request
+import os
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     resultado = None
-    error = None
-
-    if request.method == "POST":
+    if request.method == 'POST':
         try:
-            num1 = float(request.form["num1"])
-            num2 = float(request.form["num2"])
-            operacion = request.form["operacion"]
+            num1 = float(request.form['num1'])
+            num2 = float(request.form['num2'])
+            operacion = request.form['operacion']
 
-            if operacion == "suma":
+            if operacion == 'suma':
                 resultado = num1 + num2
-            elif operacion == "resta":
+            elif operacion == 'resta':
                 resultado = num1 - num2
-            elif operacion == "multiplicacion":
+            elif operacion == 'multiplicacion':
                 resultado = num1 * num2
-            elif operacion == "division":
-                if num2 == 0:
-                    error = "Error: División entre cero"
-                else:
-                    resultado = num1 / num2
-            else:
-                error = "Operación no válida."
+            elif operacion == 'division':
+                resultado = num1 / num2 if num2 != 0 else "Error: División entre 0"
         except ValueError:
-            error = "Por favor ingresa valores numéricos válidos."
+            resultado = "Error: Ingresa números válidos"
+    return render_template('index.html', resultado=resultado)
 
-    return render_template("index.html", resultado=resultado, error=error)
-
-# 🚀 Código correcto para producción (Railway/Render/Heroku)
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Usa el puerto que da Railway
-    app.run(host="0.0.0.0", port=port)
+if __name__ == '__main__':
+    # Usa el puerto asignado por Railway o 5000 por defecto
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
